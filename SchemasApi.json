@@ -1,0 +1,273 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "API Documentation",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:8080",
+      "description": "Generated server url"
+    }
+  ],
+  "paths": {
+    "/api/v1/postal": {
+      "put": {
+        "tags": [
+          "postal-controller"
+        ],
+        "summary": "Получение адресатом",
+        "operationId": "receiptAddressee",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RqMailingMovement"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/RsDto"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "postal-controller"
+        ],
+        "summary": "Регистрация почтового отправления",
+        "operationId": "registrationOfMail",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RqRegisterMailingDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/RsRegisterMailingDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/postal/depart": {
+      "put": {
+        "tags": [
+          "postal-controller"
+        ],
+        "summary": "Убытие из отделения",
+        "operationId": "departurePostage",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RqMailingMovement"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/RsDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/postal/arrival": {
+      "put": {
+        "tags": [
+          "postal-controller"
+        ],
+        "summary": "Прибыите в промежуточное отделение",
+        "operationId": "arrivalPostage",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RqMailingMovement"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/RsDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/mailing/{id}": {
+      "get": {
+        "tags": [
+          "mailing-controller"
+        ],
+        "summary": "Просмотр статуса и истории отправления",
+        "operationId": "getStatusAndHistory",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/RsHistoryMailing"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "RqMailingMovement": {
+        "type": "object",
+        "properties": {
+          "index": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "idMailing": {
+            "type": "integer",
+            "format": "int64"
+          }
+        }
+      },
+      "RsDto": {
+        "type": "object",
+        "properties": {
+          "result": {
+            "type": "boolean"
+          },
+          "message": {
+            "type": "string"
+          }
+        }
+      },
+      "RqRegisterMailingDto": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "LETTER",
+              "PACKAGE",
+              "PARCEL",
+              "POSTCARD"
+            ]
+          },
+          "indexRecipient": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "addressRecipient": {
+            "type": "string"
+          },
+          "nameRecipient": {
+            "type": "string"
+          },
+          "index": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "RsRegisterMailingDto": {
+        "type": "object",
+        "properties": {
+          "result": {
+            "type": "boolean"
+          },
+          "message": {
+            "type": "string"
+          },
+          "idMailing": {
+            "type": "integer",
+            "format": "int64"
+          }
+        }
+      },
+      "RsHistoryMailing": {
+        "type": "object",
+        "properties": {
+          "result": {
+            "type": "boolean"
+          },
+          "message": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "ARRIVED",
+              "SUBSIDED",
+              "AWAITING_RECEIPT",
+              "RECEIVED"
+            ]
+          },
+          "date": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "address": {
+            "type": "string"
+          },
+          "listMovement": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RsHistoryMailing"
+            }
+          }
+        }
+      }
+    }
+  }
+}
